@@ -1,0 +1,9 @@
+# ============================================
+# Rust
+# ============================================
+# Rust build artifacts
+/target/
+**/*.rs.bk
+*.pdb
+# Note: Cargo.lock should be committed for applications (not libraries)
+# Keeping it tracked for reproducible builds in this monorepo
