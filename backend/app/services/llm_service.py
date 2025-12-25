@@ -1,4 +1,5 @@
 import os
+import logging
 from typing import List, Dict
 from dotenv import load_dotenv
 from pydantic_ai import Agent
@@ -6,6 +7,8 @@ from app.services import conversion_service
 from app.mcp import physics_client
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 # Initialize the Pydantic AI agent
 # Default to OpenAI, but can be changed via environment variable
@@ -65,19 +68,34 @@ async def get_chat_response(message: str, conversation_history: List[Dict[str, s
     
     Returns:
         The agent's response as a string
+    
+    Raises:
+        ValueError: If the message is empty or invalid
+        RuntimeError: If the LLM service fails to respond
     """
+    if not message or not message.strip():
+        raise ValueError("Message cannot be empty")
+    
     if conversation_history is None:
         conversation_history = []
     
-    # Run the agent with the message
-    # Pydantic AI handles conversation context internally through the agent's run method
-    # We pass the user message directly
-    result = await agent.run(message)
-    
-    # Extract the text response from the result
-    # Pydantic AI returns a Result object with .data containing the response
-    if hasattr(result, 'data'):
-        return str(result.data)
-    else:
-        return str(result)
+    try:
+        # Run the agent with the message
+        # Pydantic AI handles conversation context internally through the agent's run method
+        # We pass the user message directly
+        logger.debug(f"Calling LLM agent with message: {message[:100]}...")
+        result = await agent.run(message)
+        
+        # Extract the text response from the result
+        # Pydantic AI returns a Result object with .data containing the response
+        if hasattr(result, 'data'):
+            response = str(result.data)
+        else:
+            response = str(result)
+        
+        logger.debug(f"LLM response received: {response[:100]}...")
+        return response
+    except Exception as e:
+        logger.error(f"Error getting LLM response: {str(e)}", exc_info=True)
+        raise RuntimeError(f"Failed to get response from LLM: {str(e)}")
 

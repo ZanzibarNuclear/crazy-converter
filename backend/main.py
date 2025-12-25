@@ -24,5 +24,23 @@ async def root():
 
 @app.get("/health")
 async def health():
-    return {"status": "healthy"}
+    """Health check endpoint that verifies all critical components."""
+    from app.services import conversion_service
+    
+    health_status = {
+        "status": "healthy",
+        "components": {
+            "api": "ok",
+            "rust_module": "ok" if conversion_service.RUST_MODULE_AVAILABLE else "not_available"
+        }
+    }
+    
+    if not conversion_service.RUST_MODULE_AVAILABLE:
+        health_status["status"] = "degraded"
+        health_status["warnings"] = [
+            "Rust conversion module not available. "
+            "Run 'maturin develop' in the rust/ directory to enable conversions."
+        ]
+    
+    return health_status
 

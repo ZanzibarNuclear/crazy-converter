@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from pydantic_ai.tools import tool
 
 # Import Rust conversion functions
+RUST_MODULE_AVAILABLE = False
 try:
     from converterator_rust import (
         convert_time,
@@ -23,10 +24,17 @@ try:
         convert_torque,
         convert_temperature,
     )
-except ImportError:
+    RUST_MODULE_AVAILABLE = True
+except ImportError as e:
     # Fallback if Rust module not installed yet
+    RUST_MODULE_AVAILABLE = False
+    _import_error = str(e)
     def _placeholder(*args, **kwargs):
-        raise ImportError("Rust conversion module not installed. Run 'maturin develop' in the rust/ directory.")
+        raise ImportError(
+            f"Rust conversion module not installed. "
+            f"Run 'maturin develop' in the rust/ directory. "
+            f"Original error: {_import_error}"
+        )
     convert_time = convert_length = convert_area = convert_volume = convert_mass = _placeholder
     convert_speed = convert_acceleration = convert_force = convert_pressure = _placeholder
     convert_energy = convert_power = convert_momentum = convert_torque = _placeholder
@@ -97,6 +105,12 @@ def convert_unit(
             result=result_value,
             category=category
         )
+    except ImportError as e:
+        # Re-raise ImportError as-is (from Rust module not being available)
+        raise
+    except ValueError as e:
+        # Re-raise ValueError as-is (from invalid units)
+        raise
     except Exception as e:
         raise ValueError(f"Conversion failed: {str(e)}")
 
