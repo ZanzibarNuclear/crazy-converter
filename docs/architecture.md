@@ -172,21 +172,60 @@ The LLM uses function calling to invoke this tool when it detects a conversion r
 
 ## Deployment Architecture
 
+For complete deployment instructions, see [deployment.md](deployment.md).
+
 ### Development Setup
 
 1. **Rust Module**: Built locally with `maturin develop`
 2. **Backend**: Runs on `localhost:8000` with `uvicorn main:app --reload`
 3. **Frontend**: Runs on `localhost:3000` with `npm run dev`
-4. **Environment**: Python virtual environment recommended
+4. **Environment**: Python virtual environment managed with `uv`
 
-### Production Considerations
+### Production Architecture
 
-- **Rust Module**: Should be built and packaged as a wheel
-- **Backend**: Deploy with production ASGI server (e.g., Gunicorn with Uvicorn workers)
-- **Frontend**: Build static assets with `npm run build` or `npm run generate`
-- **CORS**: Update CORS settings to restrict origins in production
-- **API Keys**: Store securely using environment variables or secret management
-- **Logging**: Configure proper logging levels and outputs
+```mermaid
+flowchart TD
+    subgraph "Static Hosting (CDN)"
+        Frontend[Nuxt Static Build]
+    end
+    
+    subgraph "Container Platform"
+        LB[Load Balancer] --> Backend1[Backend Container 1]
+        LB --> Backend2[Backend Container 2]
+        Backend1 --> Rust1[Rust Module]
+        Backend2 --> Rust2[Rust Module]
+    end
+    
+    subgraph "External Services"
+        LLM[LLM API<br/>OpenAI/Anthropic]
+    end
+    
+    User[User] --> Frontend
+    Frontend -->|API Calls| LB
+    Backend1 --> LLM
+    Backend2 --> LLM
+```
+
+### Production Stack
+
+| Component | Technology | Hosting Options |
+|-----------|------------|-----------------|
+| Frontend | Nuxt 3 (static) | Vercel, Netlify, CloudFlare Pages, nginx |
+| Backend | FastAPI + Gunicorn | Docker on Render, Railway, Cloud Run, ECS |
+| Rust Module | PyO3 wheel | Built into Docker image |
+| LLM | OpenAI/Anthropic | External API |
+
+### Key Production Considerations
+
+- **ASGI Server**: Use Gunicorn with Uvicorn workers (not plain Uvicorn)
+  ```bash
+  gunicorn main:app -k uvicorn.workers.UvicornWorker -w 4
+  ```
+- **Docker**: Multi-stage build compiles Rust in builder stage, copies wheel to production stage
+- **CORS**: Restrict origins to your frontend domain(s)
+- **Secrets**: Use platform secret management (never commit API keys)
+- **Health Checks**: `/health` endpoint monitors Rust module availability
+- **Scaling**: Backend is stateless, scale horizontally as needed
 
 ## Dependencies
 
@@ -261,4 +300,12 @@ The `/health` endpoint provides system status:
 - **Rate Limiting**: Implement rate limiting for API endpoints
 - **Authentication**: Add user authentication if needed
 - **Analytics**: Track conversion usage and popular queries
+- **CI/CD Pipeline**: GitHub Actions workflow (see [deployment.md](deployment.md#cicd-pipeline))
+
+## Related Documentation
+
+- [SETUP.md](../SETUP.md) - Local development setup
+- [deployment.md](deployment.md) - Production deployment guide
+- [features.md](features.md) - Supported conversion types
+- [plans/phase1_plan.md](plans/phase1_plan.md) - Implementation details
 

@@ -1,32 +1,138 @@
 # Crazy Converterator
 
-## Overview
+A whimsical unit conversion tool powered by natural language processing. Ask questions like *"How many horses would it take to replace a nuclear power plant?"* and get step-by-step answers.
 
-Crazy Converterator is a tool for converting between any two things. It uses natural language processing to go from one thing to another along some dimension.
+## What It Does
 
-For example, someone might ask "How many horses would you need to replace the energy produced by a nuclear power plant?"
+Crazy Converterator uses LLMs to understand conversion queries and real mathematical tools to compute accurate answers. It handles everything from simple unit conversions to creative comparisons across dimensions.
 
-The Crazy Converterator asks a few clarifying questions, and uses tools to figure out the answer. The final answer would include a step-by-step explanation of how to get from the starting point to the end.
+**Example queries:**
+- "Convert 5 miles to kilometers"
+- "How many bathtubs would fill an Olympic swimming pool?"
+- "If a car travels at 60 mph, how long to reach the moon?"
 
-Crazy Converterator is for fun. While we want the conversions to have a sense of accuracy, they are not meant to represent real situations. We want to give people the freedom to compare any two things without getting hung up by what is possible or practical.
+## Quick Start
 
-## Foundation
+### Prerequisites
 
-Crazy Converterator is built to use real conversion calculations. To that end, it relies on a variety of conversion tools that work across many dimensions: size, weight, volume, speed, time, energy, etc.
+- Python 3.10+, [uv](https://github.com/astral-sh/uv), Node.js 18+, Rust
+- OpenAI or Anthropic API key
 
-It uses a conversational interface backed by LLMs to interact with users.
-Both command-line and web interfaces are supported. The tools include custom-built tools written in Rust for super-efficient performance, plus additional tools accessed using MCP.
+### Setup
 
-Crazy Converterator is hosted in the Cloud. It also runs on local hardware with Internet access. It is built to run on Linux and UNIX (macOS).
+```bash
+# Clone the repo
+git clone https://github.com/yourusername/crazy-converter.git
+cd crazy-converter
 
-## Development Milestones
+# Set up Python environment
+uv venv && source .venv/bin/activate
 
-### Phase 1: Common Conversions
+# Build Rust module
+cd rust && uv pip install maturin && maturin develop && cd ..
 
-1. Create a tool in Rust that handles basic conversions between common units. There is no creativity involved. We just want to support well known conversions and get the components connected.
-2. Set up the chat interface in a browser, backed by FastAPI and Pydantic AI for interacting with LLMs.
-3. Plug the conversion tool into the Pydantic AI backend.
+# Install backend
+cd backend && uv pip install -r requirements.txt && cd ..
 
-### Phase 2: Bask in the Glory
+# Create backend/.env with your API key:
+# LLM_PROVIDER=openai
+# LLM_MODEL=gpt-4o-mini
+# OPENAI_API_KEY=sk-your-key
 
-That is all for now.
+# Install frontend
+cd frontend && npm install && cd ..
+```
+
+### Run
+
+**Terminal 1 (Backend):**
+```bash
+source .venv/bin/activate
+cd backend && uvicorn main:app --reload --port 8000
+```
+
+**Terminal 2 (Frontend):**
+```bash
+cd frontend && npm run dev
+```
+
+Open `http://localhost:3000` and start converting!
+
+## Architecture
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│  Frontend   │────▶│   Backend   │────▶│  LLM API    │
+│  (Nuxt 3)   │     │  (FastAPI)  │     │ (OpenAI/    │
+│             │     │      │      │     │  Anthropic) │
+└─────────────┘     └──────┼──────┘     └─────────────┘
+                           │
+                    ┌──────▼──────┐
+                    │ Rust Module │
+                    │ (PyO3)      │
+                    └─────────────┘
+```
+
+- **Frontend**: Nuxt 3 chat interface with Tailwind CSS
+- **Backend**: FastAPI with Pydantic AI for LLM orchestration
+- **Rust Module**: High-performance unit conversions via PyO3
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [SETUP.md](SETUP.md) | Detailed local development setup |
+| [docs/deployment.md](docs/deployment.md) | Production deployment guide |
+| [docs/architecture.md](docs/architecture.md) | System architecture details |
+| [docs/features.md](docs/features.md) | Supported conversion types |
+
+## Deployment
+
+For production deployment, we recommend Docker with a PaaS platform:
+
+```bash
+# Quick Docker deployment
+docker-compose up --build
+```
+
+See [docs/deployment.md](docs/deployment.md) for:
+- Docker configuration
+- PaaS deployment (Render, Railway, Cloud Run)
+- CI/CD setup with GitHub Actions
+- Environment configuration
+
+## Supported Conversions
+
+14 unit categories with 100+ unit types:
+
+| Category | Example Units |
+|----------|---------------|
+| Length | meters, feet, miles, kilometers |
+| Mass | kilograms, pounds, grams, ounces |
+| Time | seconds, hours, days, years |
+| Temperature | Celsius, Fahrenheit, Kelvin |
+| Speed | mph, km/h, m/s, knots |
+| Energy | joules, calories, kWh, BTU |
+| ... | See [features.md](docs/features.md) for full list |
+
+## Development
+
+```bash
+# Run Rust tests
+cd rust && cargo test
+
+# Run Python integration tests
+source .venv/bin/activate
+cd backend && python test_conversions.py
+
+# Check backend health
+curl http://localhost:8000/health
+```
+
+## License
+
+MIT
+
+---
+
+*Crazy Converterator is for fun. While conversions are mathematically accurate, creative comparisons are meant to inspire wonder, not replace engineering calculations.*

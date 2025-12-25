@@ -1,0 +1,22 @@
+# Frontend Development Dockerfile
+# For development with hot reload
+
+FROM node:20-slim
+
+WORKDIR /app
+
+# Copy package files
+COPY frontend/package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy application code
+COPY frontend/ .
+
+# Expose Nuxt dev server port
+EXPOSE 3000
+
+# Run development server
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+

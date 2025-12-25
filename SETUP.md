@@ -1,141 +1,159 @@
-# Setup Guide for Crazy Converterator
+# Local Development Setup
 
-This guide will help you set up and run the Crazy Converterator project.
+This guide walks you through setting up Crazy Converterator for local development.
+
+> **Looking for production deployment?** See [docs/deployment.md](docs/deployment.md).
 
 ## Prerequisites
 
-- Python 3.8+
-- uv (Python package installer and virtual environment manager)
-- Node.js 18+ and npm
-- Rust (for building the conversion library)
-- Cargo (Rust package manager)
-- An OpenAI or Anthropic API key
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Python | 3.10+ | Backend runtime |
+| uv | Latest | Python package manager |
+| Node.js | 18+ | Frontend runtime |
+| npm | 9+ | Frontend package manager |
+| Rust | Latest stable | Conversion library |
+| Cargo | Latest | Rust package manager |
 
-## Setup Steps
+**Plus one of:**
+- OpenAI API key, or
+- Anthropic API key
 
-### 1. Create Python Virtual Environment
+## Quick Start
 
 ```bash
-# From the project root directory
+# 1. Clone and enter the project
+git clone https://github.com/yourusername/crazy-converter.git
+cd crazy-converter
+
+# 2. Set up Python environment
 uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-```
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 
-This creates a virtual environment in `.venv/` and activates it. You should see `(.venv)` in your terminal prompt.
-
-### 2. Build the Rust Conversion Library
-
-```bash
+# 3. Build Rust module
 cd rust
 uv pip install maturin
 maturin develop
 cd ..
-```
 
-This will build the Rust extension module and make it available to Python in the virtual environment.
-
-### 3. Set Up the Backend
-
-```bash
+# 4. Set up backend
 cd backend
 uv pip install -r requirements.txt
-
-# Create a .env file with your API keys
-# Create .env file with the following content (replace with your actual keys):
-cat > .env << EOF
-LLM_PROVIDER=openai
-LLM_MODEL=gpt-4o-mini
-OPENAI_API_KEY=your_openai_api_key_here
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
-EOF
-# Edit .env and add your actual API keys
+# Create .env file (see Configuration section below)
 cd ..
-```
 
-**Note**: Make sure your virtual environment is activated (you should see `(.venv)` in your prompt) before running these commands.
-
-### 4. Set Up the Frontend
-
-```bash
+# 5. Set up frontend
 cd frontend
 npm install
 cd ..
 ```
 
-### 5. Run the Application
+## Configuration
 
-**Important**: Make sure your virtual environment is activated before running the backend.
-
-**Terminal 1 - Backend:**
+Create a `.env` file in the `backend/` directory:
 
 ```bash
-# Activate virtual environment if not already active
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+# backend/.env
+LLM_PROVIDER=openai
+LLM_MODEL=gpt-4o-mini
+OPENAI_API_KEY=sk-your-key-here
+# Or for Anthropic:
+# LLM_PROVIDER=anthropic
+# LLM_MODEL=claude-3-5-sonnet-20241022
+# ANTHROPIC_API_KEY=sk-ant-your-key-here
+```
 
+| Variable | Options | Description |
+|----------|---------|-------------|
+| `LLM_PROVIDER` | `openai`, `anthropic` | Which LLM provider to use |
+| `LLM_MODEL` | See below | Model name |
+| `OPENAI_API_KEY` | Your key | Required if using OpenAI |
+| `ANTHROPIC_API_KEY` | Your key | Required if using Anthropic |
+
+**Supported Models:**
+- OpenAI: `gpt-4o-mini`, `gpt-4o`, `gpt-4-turbo`
+- Anthropic: `claude-3-5-sonnet-20241022`, `claude-3-opus-20240229`
+
+## Running the Application
+
+You need **two terminal windows** - one for the backend, one for the frontend.
+
+### Terminal 1: Backend
+
+```bash
+# Activate virtual environment (required in each new terminal!)
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# Start the backend server
 cd backend
 uvicorn main:app --reload --port 8000
 ```
 
-**Terminal 2 - Frontend:**
+The backend will be available at: `http://localhost:8000`
+
+### Terminal 2: Frontend
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-### 6. Access the Application
+The frontend will be available at: `http://localhost:3000`
 
-Open your browser and navigate to `http://localhost:3000` (or the port shown by Nuxt).
+### Verify It's Working
 
-## Configuration
+1. **Check backend health:**
+   ```bash
+   curl http://localhost:8000/health
+   ```
+   
+   You should see:
+   ```json
+   {"status": "healthy", "components": {"api": "ok", "rust_module": "ok"}}
+   ```
 
-### Environment Variables (backend/.env)
+2. **Open the app:** Navigate to `http://localhost:3000` in your browser
 
-- `LLM_PROVIDER`: Either "openai" or "anthropic" (default: "openai")
-- `LLM_MODEL`: Model name (e.g., "gpt-4o-mini", "claude-3-5-sonnet-20241022")
-- `OPENAI_API_KEY`: Your OpenAI API key (if using OpenAI)
-- `ANTHROPIC_API_KEY`: Your Anthropic API key (if using Anthropic)
+3. **Test a conversion:** Type "Convert 5 miles to kilometers" and press Enter
 
-### Frontend Configuration
+## Alternative: Docker Development
 
-The frontend API base URL can be configured in `frontend/nuxt.config.ts` or via the `API_BASE` environment variable.
+If you prefer Docker, you can run the full stack with:
+
+```bash
+# Set your API key
+export OPENAI_API_KEY=sk-your-key-here
+
+# Start everything
+docker-compose up --build
+```
+
+This builds the Rust module inside Docker, so you don't need Rust installed locally.
 
 ## Testing
 
 ### Test Rust Conversions
 
-**Using Cargo tests:**
-
 ```bash
+# Run Rust unit tests
 cd rust
 cargo test
 ```
 
-**Using Python test script:**
-
 ```bash
-# Make sure virtual environment is activated
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
+# Test Python integration
+source .venv/bin/activate
 cd backend
 python test_conversions.py
 ```
 
-This script tests conversions across all categories and verifies the Rust module is properly installed.
-
 ### Test Backend API
 
-**Health Check:**
-
 ```bash
+# Health check
 curl http://localhost:8000/health
-```
 
-**Chat Endpoint:**
-
-```bash
-cd backend
-# Start the server first, then in another terminal:
+# Test chat endpoint
 curl -X POST http://localhost:8000/api/chat \
   -H "Content-Type: application/json" \
   -d '{"message": "Convert 5 miles to kilometers", "conversation_history": []}'
@@ -143,35 +161,80 @@ curl -X POST http://localhost:8000/api/chat \
 
 ## Troubleshooting
 
-### Rust Module Not Found
+### "ModuleNotFoundError: No module named 'converterator_rust'"
 
-If you get an import error for `converterator_rust`:
+The Rust module isn't installed. Fix:
 
-1. Make sure your virtual environment is activated
-2. Make sure you've run `maturin develop` in the `rust/` directory with the virtual environment activated
-3. Verify the module is installed: `python -c "import converterator_rust; print('OK')"` (should work from within the activated venv)
+```bash
+source .venv/bin/activate  # Make sure venv is active!
+cd rust
+maturin develop
+```
 
-### API Key Errors
+Then verify:
+```bash
+python -c "import converterator_rust; print('OK')"
+```
 
-Ensure your `.env` file in the `backend/` directory has the correct API key set.
+### "(.venv) not showing in prompt"
 
-### Port Conflicts
+Your virtual environment isn't activated. Run:
+```bash
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+```
 
-If port 8000 or 3000 are in use, you can:
+### API key errors
 
-- Change the backend port: `uvicorn main:app --reload --port 8001`
-- Change the frontend port by setting `PORT` environment variable
+1. Check that `backend/.env` exists and has the correct key
+2. Verify your API key is valid with your provider
+3. Make sure `LLM_PROVIDER` matches your key type
 
-### Virtual Environment Not Activated
+### Port already in use
 
-If you see import errors or "command not found" errors:
+Change the port:
+```bash
+# Backend
+uvicorn main:app --reload --port 8001
 
-- Make sure you've activated the virtual environment: `source .venv/bin/activate` (or `.venv\Scripts\activate` on Windows)
-- You should see `(.venv)` in your terminal prompt when it's activated
-- The virtual environment must be activated in each new terminal session
+# Then update frontend to point to new backend
+# Edit frontend/nuxt.config.ts or set API_BASE env var
+API_BASE=http://localhost:8001 npm run dev
+```
+
+### CORS errors
+
+If the frontend can't reach the backend, check:
+1. Backend is running on the expected port
+2. The `API_BASE` in `frontend/nuxt.config.ts` matches
+3. No firewall blocking localhost connections
+
+## Project Structure
+
+```
+crazy-converter/
+├── backend/           # FastAPI backend
+│   ├── main.py        # App entry point
+│   ├── app/           # Application modules
+│   │   ├── api/       # API routes
+│   │   ├── services/  # Business logic
+│   │   └── mcp/       # MCP integration
+│   └── requirements.txt
+├── frontend/          # Nuxt 3 frontend
+│   ├── pages/         # Page components
+│   ├── components/    # Vue components
+│   └── composables/   # Vue composables
+├── rust/              # Rust conversion library
+│   └── src/
+│       ├── lib.rs     # PyO3 bindings
+│       └── conversions/  # Conversion modules
+└── docs/              # Documentation
+    ├── architecture.md
+    ├── deployment.md  # Production deployment guide
+    └── features.md
+```
 
 ## Next Steps
 
-- Set up Physics MCP integration (optional)
-- Configure CI/CD pipelines
-- Deploy to your preferred cloud provider
+- Read [docs/architecture.md](docs/architecture.md) to understand the system design
+- Read [docs/deployment.md](docs/deployment.md) when you're ready to deploy
+- Check [docs/features.md](docs/features.md) for supported conversions
