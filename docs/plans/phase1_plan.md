@@ -356,7 +356,9 @@ crazy-converter/
 
 ### External Services
 
-- OpenAI API or Anthropic API for LLM functionality
+- **Ollama** (recommended): Free local LLM inference
+- **Groq API**: Free cloud LLM inference with generous rate limits  
+- OpenAI API or Anthropic API for LLM functionality (paid, optional)
 
 ## Known Limitations
 

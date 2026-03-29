@@ -11,7 +11,7 @@ flowchart TD
     User[User Browser] -->|HTTP Requests| Frontend[Nuxt 3 Frontend]
     Frontend -->|REST API| Backend[FastAPI Backend]
     Backend -->|Python Calls| RustModule[Rust Conversion Module]
-    Backend -->|API Calls| LLM[LLM Provider<br/>OpenAI/Anthropic]
+    Backend -->|API Calls| LLM[LLM Provider<br/>Ollama/Groq/OpenAI/Anthropic]
     Backend -->|Tool Calls| ConversionService[Conversion Service]
     ConversionService -->|Function Calls| RustModule
     LLM -->|Tool Invocation| ConversionService
@@ -59,7 +59,12 @@ flowchart TD
   - Handles error cases with appropriate HTTP status codes
 
 #### LLM Service (`app/services/llm_service.py`)
-- **Agent**: Pydantic AI agent configured with OpenAI or Anthropic models
+- **Agent**: Pydantic AI agent with pluggable LLM providers
+- **Supported Providers**:
+  - **Ollama**: Free local models (qwen2.5-coder, deepseek-coder, codellama)
+  - **Groq**: Free cloud API (llama-3.3-70b, mixtral)
+  - **OpenAI**: Paid API (gpt-4o-mini, gpt-4o)
+  - **Anthropic**: Paid API (claude-3-5-sonnet)
 - **System Prompt**: Defines the assistant's role and capabilities
 - **Tool Integration**: Registers conversion tools and MCP physics tools
 - **Response Handling**: Processes LLM responses and extracts text
@@ -75,9 +80,12 @@ flowchart TD
 
 **Configuration**:
 - Environment variables in `.env`:
-  - `LLM_PROVIDER`: "openai" or "anthropic"
-  - `LLM_MODEL`: Model name (e.g., "gpt-4o-mini")
-  - `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`: API keys
+  - `LLM_PROVIDER`: "ollama", "groq", "openai", or "anthropic" (default: "ollama")
+  - `LLM_MODEL`: Model name (default: "qwen2.5-coder:7b")
+  - `OLLAMA_BASE_URL`: Ollama server URL (default: "http://localhost:11434/v1")
+  - `GROQ_API_KEY`: Required for Groq provider
+  - `OPENAI_API_KEY`: Required for OpenAI provider
+  - `ANTHROPIC_API_KEY`: Required for Anthropic provider
 
 ### Rust Conversion Module
 
@@ -246,7 +254,9 @@ flowchart TD
 - `pyo3@0.22`: Python-Rust bindings (with extension-module feature)
 
 ### External Services
-- OpenAI API or Anthropic API for LLM functionality
+- **Ollama** (recommended): Local LLM inference - free, private, no API key required
+- **Groq API**: Free cloud LLM inference with generous rate limits
+- OpenAI API or Anthropic API: Paid LLM providers (optional)
 
 ## Technical Decisions
 

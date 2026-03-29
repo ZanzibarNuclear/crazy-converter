@@ -15,9 +15,10 @@ This guide walks you through setting up Crazy Converterator for local developmen
 | Rust | Latest stable | Conversion library |
 | Cargo | Latest | Rust package manager |
 
-**Plus one of:**
-- OpenAI API key, or
-- Anthropic API key
+**Plus an LLM provider (choose one):**
+- **Ollama** (recommended) - Free, local, private
+- **Groq** - Free cloud API with generous limits
+- OpenAI or Anthropic - Paid APIs
 
 ## Quick Start
 
@@ -39,7 +40,7 @@ cd ..
 # 4. Set up backend
 cd backend
 uv pip install -r requirements.txt
-# Create .env file (see Configuration section below)
+# Create .env file (see LLM Configuration section below)
 cd ..
 
 # 5. Set up frontend
@@ -48,31 +49,94 @@ npm install
 cd ..
 ```
 
-## Configuration
+## LLM Configuration
 
-Create a `.env` file in the `backend/` directory:
+Crazy Converterator supports multiple LLM providers. **We recommend Ollama for free, local inference.**
+
+### Option 1: Ollama (Recommended - Free & Local)
+
+Ollama runs models locally on your machine. No API keys, no costs, complete privacy.
+
+**1. Install Ollama:**
+```bash
+# macOS/Linux
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Or download from https://ollama.com/download
+```
+
+**2. Pull a coding model:**
+```bash
+# Recommended: Qwen 2.5 Coder (excellent for code and reasoning)
+ollama pull qwen2.5-coder:7b
+
+# Alternatives:
+# ollama pull deepseek-coder-v2:16b    # Great for complex code
+# ollama pull codellama:7b              # Meta's coding model
+# ollama pull llama3.2:3b               # Smaller, faster
+```
+
+**3. Start Ollama (if not running):**
+```bash
+ollama serve
+```
+
+**4. Create backend/.env:**
+```bash
+LLM_PROVIDER=ollama
+LLM_MODEL=qwen2.5-coder:7b
+# Optional: custom Ollama URL (default: http://localhost:11434/v1)
+# OLLAMA_BASE_URL=http://localhost:11434/v1
+```
+
+### Option 2: Groq (Free Cloud API)
+
+Groq offers free API access with generous rate limits and fast inference.
+
+**1. Get a free API key:**
+- Sign up at [console.groq.com](https://console.groq.com)
+- Create an API key (instant, no credit card required)
+
+**2. Create backend/.env:**
+```bash
+LLM_PROVIDER=groq
+LLM_MODEL=llama-3.3-70b-versatile
+GROQ_API_KEY=gsk_your_key_here
+```
+
+**Recommended Groq models:**
+| Model | Best For |
+|-------|----------|
+| `llama-3.3-70b-versatile` | Best quality, general purpose |
+| `llama-3.1-8b-instant` | Faster, good for simple queries |
+| `mixtral-8x7b-32768` | Good reasoning, large context |
+
+### Option 3: OpenAI (Paid)
 
 ```bash
-# backend/.env
 LLM_PROVIDER=openai
 LLM_MODEL=gpt-4o-mini
 OPENAI_API_KEY=sk-your-key-here
-# Or for Anthropic:
-# LLM_PROVIDER=anthropic
-# LLM_MODEL=claude-3-5-sonnet-20241022
-# ANTHROPIC_API_KEY=sk-ant-your-key-here
 ```
+
+### Option 4: Anthropic (Paid)
+
+```bash
+LLM_PROVIDER=anthropic
+LLM_MODEL=claude-3-5-sonnet-20241022
+ANTHROPIC_API_KEY=sk-ant-your-key-here
+```
+
+## Configuration Reference
 
 | Variable | Options | Description |
 |----------|---------|-------------|
-| `LLM_PROVIDER` | `openai`, `anthropic` | Which LLM provider to use |
-| `LLM_MODEL` | See below | Model name |
+| `LLM_PROVIDER` | `ollama`, `groq`, `openai`, `anthropic` | Which LLM provider to use |
+| `LLM_MODEL` | See above | Model name for the provider |
+| `OLLAMA_BASE_URL` | URL | Ollama server URL (default: `http://localhost:11434/v1`) |
+| `GROQ_API_KEY` | Your key | Required if using Groq |
 | `OPENAI_API_KEY` | Your key | Required if using OpenAI |
 | `ANTHROPIC_API_KEY` | Your key | Required if using Anthropic |
-
-**Supported Models:**
-- OpenAI: `gpt-4o-mini`, `gpt-4o`, `gpt-4-turbo`
-- Anthropic: `claude-3-5-sonnet-20241022`, `claude-3-opus-20240229`
 
 ## Running the Application
 
@@ -109,7 +173,16 @@ The frontend will be available at: `http://localhost:3000`
    
    You should see:
    ```json
-   {"status": "healthy", "components": {"api": "ok", "rust_module": "ok"}}
+   {
+     "status": "healthy",
+     "components": {
+       "api": "ok",
+       "rust_module": "ok",
+       "llm_provider": "ollama",
+       "llm_model": "qwen2.5-coder:7b",
+       "ollama_url": "http://localhost:11434/v1"
+     }
+   }
    ```
 
 2. **Open the app:** Navigate to `http://localhost:3000` in your browser
@@ -121,10 +194,13 @@ The frontend will be available at: `http://localhost:3000`
 If you prefer Docker, you can run the full stack with:
 
 ```bash
-# Set your API key
-export OPENAI_API_KEY=sk-your-key-here
+# For Groq (cloud API)
+export GROQ_API_KEY=gsk-your-key-here
+docker-compose up --build
 
-# Start everything
+# For Ollama, run Ollama on host and configure:
+export LLM_PROVIDER=ollama
+export OLLAMA_BASE_URL=http://host.docker.internal:11434/v1
 docker-compose up --build
 ```
 
@@ -183,11 +259,18 @@ Your virtual environment isn't activated. Run:
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 ```
 
-### API key errors
+### Ollama connection errors
 
-1. Check that `backend/.env` exists and has the correct key
-2. Verify your API key is valid with your provider
-3. Make sure `LLM_PROVIDER` matches your key type
+1. Make sure Ollama is running: `ollama serve`
+2. Check if the model is downloaded: `ollama list`
+3. Pull the model if needed: `ollama pull qwen2.5-coder:7b`
+4. Test Ollama directly: `ollama run qwen2.5-coder:7b "Hello"`
+
+### Groq API errors
+
+1. Verify your API key is correct
+2. Check your rate limits at [console.groq.com](https://console.groq.com)
+3. Try a different model if one is overloaded
 
 ### Port already in use
 
@@ -216,7 +299,7 @@ crazy-converter/
 │   ├── main.py        # App entry point
 │   ├── app/           # Application modules
 │   │   ├── api/       # API routes
-│   │   ├── services/  # Business logic
+│   │   ├── services/  # Business logic (LLM, conversions)
 │   │   └── mcp/       # MCP integration
 │   └── requirements.txt
 ├── frontend/          # Nuxt 3 frontend

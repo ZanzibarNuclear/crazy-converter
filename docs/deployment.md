@@ -21,8 +21,8 @@ Crazy Converterator consists of three main components:
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │    Frontend     │────▶│    Backend      │────▶│  LLM Provider   │
-│   (Nuxt 3)      │     │   (FastAPI)     │     │ (OpenAI/Claude) │
-│   Port 3000     │     │   Port 8000     │     │                 │
+│   (Nuxt 3)      │     │   (FastAPI)     │     │ (Ollama/Groq/   │
+│   Port 3000     │     │   Port 8000     │     │  OpenAI/Claude) │
 └─────────────────┘     └────────┬────────┘     └─────────────────┘
                                  │
                         ┌────────▼────────┐
@@ -31,6 +31,15 @@ Crazy Converterator consists of three main components:
                         │     _rust)      │
                         └─────────────────┘
 ```
+
+**LLM Provider Options:**
+
+| Provider | Cost | Hosting | Best For |
+|----------|------|---------|----------|
+| **Ollama** | Free | Local/Self-hosted | Privacy, no rate limits |
+| **Groq** | Free tier | Cloud | Fast inference, no setup |
+| OpenAI | Paid | Cloud | Production quality |
+| Anthropic | Paid | Cloud | Production quality |
 
 **Key Deployment Considerations:**
 
@@ -41,6 +50,8 @@ Crazy Converterator consists of three main components:
    - **Node.js server** (`nuxt build`) - requires Node.js runtime
 
 3. **Backend**: FastAPI requires an ASGI server. In production, use Gunicorn with Uvicorn workers.
+
+4. **LLM Provider**: For free deployment, use Ollama (self-hosted) or Groq (cloud API with free tier).
 
 ---
 
@@ -363,14 +374,27 @@ sudo apt install nginx certbot python3-certbot-nginx
 
 ## Environment Configuration
 
-### Required Environment Variables
+### LLM Provider Options
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `LLM_PROVIDER` | LLM provider: `openai` or `anthropic` | Yes |
-| `LLM_MODEL` | Model name (e.g., `gpt-4o-mini`, `claude-3-5-sonnet-20241022`) | Yes |
-| `OPENAI_API_KEY` | OpenAI API key | If using OpenAI |
-| `ANTHROPIC_API_KEY` | Anthropic API key | If using Anthropic |
+We support four LLM providers. **Ollama and Groq are free!**
+
+| Provider | Cost | Setup | Environment Variables |
+|----------|------|-------|----------------------|
+| **Ollama** | Free | Local install | `LLM_PROVIDER=ollama` |
+| **Groq** | Free tier | API key | `LLM_PROVIDER=groq`, `GROQ_API_KEY` |
+| OpenAI | Paid | API key | `LLM_PROVIDER=openai`, `OPENAI_API_KEY` |
+| Anthropic | Paid | API key | `LLM_PROVIDER=anthropic`, `ANTHROPIC_API_KEY` |
+
+### Environment Variables Reference
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `LLM_PROVIDER` | `ollama`, `groq`, `openai`, or `anthropic` | `ollama` |
+| `LLM_MODEL` | Model name for the provider | `qwen2.5-coder:7b` |
+| `OLLAMA_BASE_URL` | Ollama server URL | `http://localhost:11434/v1` |
+| `GROQ_API_KEY` | Groq API key | - |
+| `OPENAI_API_KEY` | OpenAI API key | - |
+| `ANTHROPIC_API_KEY` | Anthropic API key | - |
 
 ### Frontend Environment Variables
 
@@ -378,19 +402,43 @@ sudo apt install nginx certbot python3-certbot-nginx
 |----------|-------------|---------|
 | `API_BASE` | Backend API URL | `http://localhost:8000` |
 
-### Example `.env` File
+### Example Configurations
 
-Create `backend/.env.example`:
-
+**Option 1: Ollama (Free, Local)**
 ```bash
-# LLM Configuration
+# backend/.env
+LLM_PROVIDER=ollama
+LLM_MODEL=qwen2.5-coder:7b
+# OLLAMA_BASE_URL=http://localhost:11434/v1  # Optional, this is the default
+```
+
+**Option 2: Groq (Free Cloud API)**
+```bash
+# backend/.env
+LLM_PROVIDER=groq
+LLM_MODEL=llama-3.3-70b-versatile
+GROQ_API_KEY=gsk_your_key_here
+```
+
+**Option 3: OpenAI (Paid)**
+```bash
+# backend/.env
 LLM_PROVIDER=openai
 LLM_MODEL=gpt-4o-mini
-
-# API Keys (never commit actual keys!)
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-your_key_here
 ```
+
+### Recommended Models by Provider
+
+| Provider | Model | Notes |
+|----------|-------|-------|
+| Ollama | `qwen2.5-coder:7b` | Excellent coding, 7B params |
+| Ollama | `deepseek-coder-v2:16b` | Better quality, needs more RAM |
+| Ollama | `llama3.2:3b` | Faster, lower quality |
+| Groq | `llama-3.3-70b-versatile` | Best free cloud option |
+| Groq | `llama-3.1-8b-instant` | Faster, simpler queries |
+| OpenAI | `gpt-4o-mini` | Good balance of cost/quality |
+| Anthropic | `claude-3-5-sonnet-20241022` | Excellent reasoning |
 
 ### Security Best Practices
 
@@ -538,6 +586,25 @@ app.add_middleware(
 2. Check API key validity with the provider
 3. Ensure you're using the right provider (`LLM_PROVIDER`)
 
+#### Ollama Connection Errors
+
+**Symptom**: Can't connect to Ollama
+
+**Solution**:
+1. Make sure Ollama is running: `ollama serve`
+2. Check the URL: default is `http://localhost:11434/v1`
+3. For Docker, use `http://host.docker.internal:11434/v1`
+4. Verify model is pulled: `ollama list`
+
+#### Groq Rate Limits
+
+**Symptom**: 429 Too Many Requests
+
+**Solution**:
+1. Wait and retry (free tier has rate limits)
+2. Check your usage at [console.groq.com](https://console.groq.com)
+3. Consider upgrading or using Ollama for unlimited local inference
+
 ### Health Check Endpoint
 
 The `/health` endpoint provides system status:
@@ -552,12 +619,16 @@ Response:
   "status": "healthy",
   "components": {
     "api": "ok",
-    "rust_module": "ok"
+    "rust_module": "ok",
+    "llm_provider": "ollama",
+    "llm_model": "qwen2.5-coder:7b",
+    "ollama_url": "http://localhost:11434/v1"
   }
 }
 ```
 
-If `rust_module` is `"not_available"`, the Rust extension wasn't installed correctly.
+- If `rust_module` is `"not_available"`, the Rust extension wasn't installed correctly.
+- Check `llm_provider` and `llm_model` to verify your LLM configuration.
 
 ---
 
@@ -571,9 +642,18 @@ If `rust_module` is `"not_available"`, the Rust extension wasn't installed corre
 | Cloud Run/Fargate | Medium | Auto-scaling, serverless |
 | Self-hosted + K8s | High | Enterprise, high scale |
 
+### LLM Provider Recommendations
+
+| Scenario | Recommended Provider |
+|----------|---------------------|
+| Local development | Ollama (free, private) |
+| Free cloud hosting | Groq (free tier) |
+| Production (budget) | Groq or self-hosted Ollama |
+| Production (quality) | OpenAI or Anthropic |
+
 **Recommended path for most projects:**
-1. Start with local development using `SETUP.md`
-2. Test with Docker Compose locally
-3. Deploy to Render or Railway for production
+1. Start with Ollama locally for development (free, no API keys)
+2. Test with Docker Compose + Groq for cloud deployment
+3. Deploy to Render or Railway with Groq for production
 4. Scale up to Cloud Run or Kubernetes as needed
 

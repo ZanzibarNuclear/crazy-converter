@@ -16,7 +16,7 @@ Crazy Converterator uses LLMs to understand conversion queries and real mathemat
 ### Prerequisites
 
 - Python 3.10+, [uv](https://github.com/astral-sh/uv), Node.js 18+, Rust
-- OpenAI or Anthropic API key
+- **Ollama** (free, local) or a **Groq** account (free cloud API)
 
 ### Setup
 
@@ -34,10 +34,18 @@ cd rust && uv pip install maturin && maturin develop && cd ..
 # Install backend
 cd backend && uv pip install -r requirements.txt && cd ..
 
-# Create backend/.env with your API key:
-# LLM_PROVIDER=openai
-# LLM_MODEL=gpt-4o-mini
-# OPENAI_API_KEY=sk-your-key
+# Install Ollama and pull a model (free, local)
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull qwen2.5-coder:7b
+
+# Create backend/.env (Ollama is the default, no API key needed!)
+echo "LLM_PROVIDER=ollama" > backend/.env
+echo "LLM_MODEL=qwen2.5-coder:7b" >> backend/.env
+
+# Or use Groq (free cloud API):
+# LLM_PROVIDER=groq
+# LLM_MODEL=llama-3.3-70b-versatile
+# GROQ_API_KEY=gsk_your_key_here
 
 # Install frontend
 cd frontend && npm install && cd ..
@@ -62,9 +70,9 @@ Open `http://localhost:3000` and start converting!
 
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│  Frontend   │────▶│   Backend   │────▶│  LLM API    │
-│  (Nuxt 3)   │     │  (FastAPI)  │     │ (OpenAI/    │
-│             │     │      │      │     │  Anthropic) │
+│  Frontend   │────▶│   Backend   │────▶│  LLM        │
+│  (Nuxt 3)   │     │  (FastAPI)  │     │ (Ollama/    │
+│             │     │      │      │     │  Groq/etc)  │
 └─────────────┘     └──────┼──────┘     └─────────────┘
                            │
                     ┌──────▼──────┐
@@ -76,6 +84,7 @@ Open `http://localhost:3000` and start converting!
 - **Frontend**: Nuxt 3 chat interface with Tailwind CSS
 - **Backend**: FastAPI with Pydantic AI for LLM orchestration
 - **Rust Module**: High-performance unit conversions via PyO3
+- **LLM Providers**: Ollama (free local), Groq (free cloud), OpenAI, Anthropic
 
 ## Documentation
 
@@ -136,3 +145,5 @@ MIT
 ---
 
 *Crazy Converterator is for fun. While conversions are mathematically accurate, creative comparisons are meant to inspire wonder, not replace engineering calculations.*
+
+**100% free to run** with Ollama (local) or Groq (cloud) - no paid API keys required!
