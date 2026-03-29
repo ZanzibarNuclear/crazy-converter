@@ -3,7 +3,7 @@ Conversion service that wraps Rust conversion functions and provides them as too
 """
 from typing import Literal
 from pydantic import BaseModel
-from pydantic_ai.tools import tool
+from pydantic_ai import Tool
 
 # Import Rust conversion functions
 RUST_MODULE_AVAILABLE = False
@@ -50,7 +50,6 @@ class ConversionResult(BaseModel):
     category: str
 
 
-@tool
 def convert_unit(
     value: float,
     from_unit: str,
@@ -116,5 +115,5 @@ def convert_unit(
 
 
 # List of all available tools
-conversion_tools = [convert_unit]
+conversion_tools = [Tool(convert_unit)]
 

@@ -12,7 +12,7 @@ import logging
 from typing import List, Dict
 from dotenv import load_dotenv
 from pydantic_ai import Agent
-from app.services import conversion_service
+from app.services import conversion_service, comparison_service
 from app.mcp import physics_client
 
 load_dotenv()
@@ -38,12 +38,12 @@ def get_model():
     
     if provider == "ollama":
         # Ollama - local models, completely free
-        # Popular coding models: qwen2.5-coder, deepseek-coder-v2, codellama, devstral
-        from pydantic_ai.models.ollama import OllamaModel
-        
+        # Uses OpenAI-compatible API
+        from pydantic_ai.models.openai import OpenAIModel
+
         ollama_base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
         logger.info(f"Using Ollama model: {model_name} at {ollama_base_url}")
-        return OllamaModel(model_name, base_url=ollama_base_url)
+        return OpenAIModel(model_name, base_url=ollama_base_url, api_key="ollama")
     
     elif provider == "groq":
         # Groq - free cloud API with OpenAI-compatible endpoint
@@ -93,32 +93,43 @@ def get_model():
 # Initialize the model
 model = get_model()
 
-# System prompt for the conversion agent
-SYSTEM_PROMPT = """You are the Crazy Converterator, a helpful assistant that converts between different units and measurements.
+# System prompt for the comparison agent
+SYSTEM_PROMPT = """You are the Crazy Converterator. Your job is to help people understand \
+unfamiliar quantities by finding surprising, memorable comparisons between real-world items.
 
-Your role is to:
-1. Understand user queries about unit conversions
-2. Use the available conversion tools to perform accurate conversions
-3. Provide clear, step-by-step explanations of how you arrived at your answer
-4. Be friendly and conversational while maintaining accuracy
+You have a catalog of items (bananas, cows, lightning bolts, the Sun, etc.) with verified \
+physical properties across many dimensions (energy, mass, length, volume, time, etc.).
 
-You can convert between many types of units:
-- Time (seconds, minutes, hours, days, etc.)
-- Length (meters, feet, miles, kilometers, etc.)
-- Area (square meters, acres, hectares, etc.)
-- Volume (liters, gallons, cubic meters, etc.)
-- Mass (kilograms, pounds, grams, etc.)
-- Speed (m/s, mph, km/h, etc.)
-- Acceleration, Force, Pressure
-- Energy, Power, Momentum, Torque
-- Temperature (Celsius, Fahrenheit, Kelvin, Rankine)
+Your workflow:
+1. When given an item and dimension, use lookup_item to get its verified property value.
+2. Use search_catalog to find comparison targets in the same dimension — prefer items from \
+a very different category (food vs. astronomy, animals vs. engineering, human body vs. nuclear physics).
+3. Use convert_unit to compute the exact equivalence between the two items' properties.
+4. Present the result as a fun, memorable statement.
 
-When a user asks a conversion question, identify the relevant conversion category and use the appropriate tool.
-Always explain your reasoning and show the calculation when possible.
+Guidelines for great comparisons:
+- Cross-domain is best: comparing food to nuclear physics, insects to rockets, heartbeats to geology.
+- Surprising ratios are best: "10 billion bananas" or "0.00000001 supernovas" are more memorable than "3.2 cars."
+- Lead with the punchline: "A month of cow farts could drive you from New York to Philadelphia." Then explain the chain.
+- Always use the catalog's verified numbers. If a user asks about something not in the catalog, \
+you can use your knowledge, but note that the number is approximate.
+- Keep the tone fun and slightly irreverent, but the math must be exact.
+
+For multi-step chains (A→B across dimension 1, then B→C across dimension 2):
+- Show each step clearly
+- Use convert_unit for each conversion
+- The chain reveals non-obvious connections — that's the whole point
+
+Available dimensions: time, length, area, volume, mass, speed, acceleration, force, pressure, \
+energy, power, momentum, torque, temperature.
 """
 
-# Create the agent with conversion tools and Physics MCP tools
-all_tools = conversion_service.conversion_tools + physics_client.physics_mcp_tools
+# Create the agent with conversion, comparison, and Physics MCP tools
+all_tools = (
+    conversion_service.conversion_tools
+    + comparison_service.comparison_tools
+    + physics_client.physics_mcp_tools
+)
 
 agent = Agent(
     model=model,

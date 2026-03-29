@@ -7,7 +7,7 @@ The Physics MCP server should be installed and configured separately.
 import os
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
-from pydantic_ai.tools import tool
+from pydantic_ai import Tool
 
 # Try to import MCP client library
 try:
@@ -85,7 +85,6 @@ def get_physics_client() -> PhysicsMCPClient:
 # Example tool wrappers - these should be created dynamically based on available MCP tools
 # or manually defined based on the Physics MCP server's available tools
 
-@tool
 async def solve_equation(equation: str, variable: str) -> Dict[str, Any]:
     """
     Solve an equation symbolically using the Physics MCP Computer Algebra System.
@@ -108,7 +107,6 @@ async def solve_equation(equation: str, variable: str) -> Dict[str, Any]:
         return {"error": str(e), "note": "Physics MCP not configured"}
 
 
-@tool
 async def evaluate_expression(expression: str) -> Dict[str, Any]:
     """
     Evaluate a mathematical expression symbolically or numerically.
@@ -130,7 +128,6 @@ async def evaluate_expression(expression: str) -> Dict[str, Any]:
         return {"error": str(e), "note": "Physics MCP not configured"}
 
 
-@tool
 async def simplify_expression(expression: str) -> Dict[str, Any]:
     """
     Simplify a mathematical expression using symbolic algebra.
@@ -159,8 +156,8 @@ physics_mcp_tools = []
 # Only add tools if MCP is available
 if MCP_AVAILABLE:
     physics_mcp_tools = [
-        solve_equation,
-        evaluate_expression,
-        simplify_expression,
+        Tool(solve_equation),
+        Tool(evaluate_expression),
+        Tool(simplify_expression),
     ]
 

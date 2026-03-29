@@ -1,0 +1,446 @@
+{
+  "items": [
+    {
+      "id": "banana",
+      "name": "a banana",
+      "category": "food",
+      "properties": [
+        {"dimension": "energy", "value": 89.0, "unit": "kcal", "label": "caloric energy"},
+        {"dimension": "mass", "value": 118.0, "unit": "grams", "label": "weight"},
+        {"dimension": "length", "value": 20.0, "unit": "centimeters", "label": "length"}
+      ]
+    },
+    {
+      "id": "chicken_egg",
+      "name": "a chicken egg",
+      "category": "food",
+      "properties": [
+        {"dimension": "energy", "value": 74.0, "unit": "kcal", "label": "caloric energy"},
+        {"dimension": "mass", "value": 50.0, "unit": "grams", "label": "weight"},
+        {"dimension": "volume", "value": 44.0, "unit": "milliliters", "label": "volume"}
+      ]
+    },
+    {
+      "id": "pizza_slice",
+      "name": "a slice of pizza",
+      "category": "food",
+      "properties": [
+        {"dimension": "energy", "value": 285.0, "unit": "kcal", "label": "caloric energy"},
+        {"dimension": "mass", "value": 107.0, "unit": "grams", "label": "weight"},
+        {"dimension": "area", "value": 232.0, "unit": "square_centimeters", "label": "surface area"}
+      ]
+    },
+    {
+      "id": "chocolate_bar",
+      "name": "a chocolate bar",
+      "category": "food",
+      "properties": [
+        {"dimension": "energy", "value": 235.0, "unit": "kcal", "label": "caloric energy"},
+        {"dimension": "mass", "value": 43.0, "unit": "grams", "label": "weight"}
+      ]
+    },
+    {
+      "id": "cup_of_coffee",
+      "name": "a cup of coffee",
+      "category": "food",
+      "properties": [
+        {"dimension": "energy", "value": 2.0, "unit": "kcal", "label": "caloric energy (black)"},
+        {"dimension": "volume", "value": 237.0, "unit": "milliliters", "label": "volume"},
+        {"dimension": "temperature", "value": 71.0, "unit": "celsius", "label": "serving temperature"}
+      ]
+    },
+    {
+      "id": "apple",
+      "name": "an apple",
+      "category": "food",
+      "properties": [
+        {"dimension": "energy", "value": 95.0, "unit": "kcal", "label": "caloric energy"},
+        {"dimension": "mass", "value": 182.0, "unit": "grams", "label": "weight"},
+        {"dimension": "volume", "value": 240.0, "unit": "milliliters", "label": "volume"}
+      ]
+    },
+    {
+      "id": "cow",
+      "name": "a cow",
+      "category": "animal",
+      "properties": [
+        {"dimension": "mass", "value": 700.0, "unit": "kilograms", "label": "body weight"},
+        {"dimension": "mass", "value": 5.8, "unit": "kilograms", "label": "methane from one month of flatulence", "qualifier": "monthly_methane"},
+        {"dimension": "volume", "value": 28.0, "unit": "liters", "label": "daily milk production", "qualifier": "daily_milk"}
+      ]
+    },
+    {
+      "id": "elephant",
+      "name": "an African elephant",
+      "category": "animal",
+      "properties": [
+        {"dimension": "mass", "value": 6000.0, "unit": "kilograms", "label": "body weight"},
+        {"dimension": "length", "value": 6.0, "unit": "meters", "label": "body length"},
+        {"dimension": "volume", "value": 190.0, "unit": "liters", "label": "daily water intake", "qualifier": "daily_water"}
+      ]
+    },
+    {
+      "id": "blue_whale",
+      "name": "a blue whale",
+      "category": "animal",
+      "properties": [
+        {"dimension": "mass", "value": 150000.0, "unit": "kilograms", "label": "body weight"},
+        {"dimension": "length", "value": 30.0, "unit": "meters", "label": "body length"},
+        {"dimension": "volume", "value": 2500.0, "unit": "liters", "label": "heart volume"},
+        {"dimension": "energy", "value": 1500000.0, "unit": "kcal", "label": "daily caloric intake", "qualifier": "daily_calories"}
+      ]
+    },
+    {
+      "id": "ant",
+      "name": "an ant",
+      "category": "animal",
+      "properties": [
+        {"dimension": "mass", "value": 1.0, "unit": "milligrams", "label": "body weight"},
+        {"dimension": "length", "value": 2.0, "unit": "millimeters", "label": "body length"},
+        {"dimension": "force", "value": 0.0005, "unit": "newtons", "label": "carrying force"}
+      ]
+    },
+    {
+      "id": "hummingbird",
+      "name": "a hummingbird",
+      "category": "animal",
+      "properties": [
+        {"dimension": "mass", "value": 4.0, "unit": "grams", "label": "body weight"},
+        {"dimension": "speed", "value": 48.0, "unit": "kilometers_per_hour", "label": "flight speed"},
+        {"dimension": "energy", "value": 7.0, "unit": "kcal", "label": "daily caloric intake", "qualifier": "daily_calories"}
+      ]
+    },
+    {
+      "id": "human_tooth",
+      "name": "a human molar",
+      "category": "human_body",
+      "properties": [
+        {"dimension": "mass", "value": 2.3, "unit": "grams", "label": "weight"},
+        {"dimension": "volume", "value": 0.9, "unit": "milliliters", "label": "volume"},
+        {"dimension": "force", "value": 720.0, "unit": "newtons", "label": "maximum bite force"}
+      ]
+    },
+    {
+      "id": "human_hair",
+      "name": "a human hair",
+      "category": "human_body",
+      "properties": [
+        {"dimension": "length", "value": 75.0, "unit": "micrometers", "label": "diameter"},
+        {"dimension": "force", "value": 0.6, "unit": "newtons", "label": "tensile strength before breaking"},
+        {"dimension": "speed", "value": 0.44, "unit": "millimeters", "label": "daily growth rate", "qualifier": "daily_growth"}
+      ]
+    },
+    {
+      "id": "adult_human",
+      "name": "an adult human",
+      "category": "human_body",
+      "properties": [
+        {"dimension": "mass", "value": 70.0, "unit": "kilograms", "label": "average body weight"},
+        {"dimension": "length", "value": 1.7, "unit": "meters", "label": "average height"},
+        {"dimension": "energy", "value": 2000.0, "unit": "kcal", "label": "daily caloric need", "qualifier": "daily_calories"},
+        {"dimension": "power", "value": 75.0, "unit": "watts", "label": "resting metabolic power"},
+        {"dimension": "volume", "value": 5.0, "unit": "liters", "label": "blood volume"}
+      ]
+    },
+    {
+      "id": "human_brain",
+      "name": "a human brain",
+      "category": "human_body",
+      "properties": [
+        {"dimension": "mass", "value": 1.4, "unit": "kilograms", "label": "weight"},
+        {"dimension": "power", "value": 20.0, "unit": "watts", "label": "power consumption"},
+        {"dimension": "volume", "value": 1.26, "unit": "liters", "label": "volume"}
+      ]
+    },
+    {
+      "id": "drop_of_blood",
+      "name": "a drop of blood",
+      "category": "human_body",
+      "properties": [
+        {"dimension": "volume", "value": 0.05, "unit": "milliliters", "label": "volume"},
+        {"dimension": "mass", "value": 0.05, "unit": "grams", "label": "weight"}
+      ]
+    },
+    {
+      "id": "car",
+      "name": "a typical car",
+      "category": "vehicle",
+      "properties": [
+        {"dimension": "mass", "value": 1500.0, "unit": "kilograms", "label": "curb weight"},
+        {"dimension": "length", "value": 4.5, "unit": "meters", "label": "length"},
+        {"dimension": "power", "value": 110000.0, "unit": "watts", "label": "engine power"},
+        {"dimension": "speed", "value": 96.0, "unit": "kilometers_per_hour", "label": "average highway speed"}
+      ]
+    },
+    {
+      "id": "bicycle",
+      "name": "a bicycle",
+      "category": "vehicle",
+      "properties": [
+        {"dimension": "mass", "value": 10.0, "unit": "kilograms", "label": "weight"},
+        {"dimension": "speed", "value": 20.0, "unit": "kilometers_per_hour", "label": "average riding speed"},
+        {"dimension": "power", "value": 75.0, "unit": "watts", "label": "power needed to ride at average speed"}
+      ]
+    },
+    {
+      "id": "boeing_747",
+      "name": "a Boeing 747",
+      "category": "vehicle",
+      "properties": [
+        {"dimension": "mass", "value": 178756.0, "unit": "kilograms", "label": "empty weight"},
+        {"dimension": "length", "value": 70.7, "unit": "meters", "label": "fuselage length"},
+        {"dimension": "speed", "value": 920.0, "unit": "kilometers_per_hour", "label": "cruising speed"},
+        {"dimension": "volume", "value": 216840.0, "unit": "liters", "label": "fuel capacity"}
+      ]
+    },
+    {
+      "id": "saturn_v",
+      "name": "a Saturn V rocket",
+      "category": "vehicle",
+      "properties": [
+        {"dimension": "mass", "value": 2970000.0, "unit": "kilograms", "label": "launch weight (fully fueled)"},
+        {"dimension": "length", "value": 110.6, "unit": "meters", "label": "height"},
+        {"dimension": "force", "value": 34020000.0, "unit": "newtons", "label": "first stage thrust"},
+        {"dimension": "power", "value": 60000000000.0, "unit": "watts", "label": "first stage power output"}
+      ]
+    },
+    {
+      "id": "eiffel_tower",
+      "name": "the Eiffel Tower",
+      "category": "building",
+      "properties": [
+        {"dimension": "mass", "value": 7300000.0, "unit": "kilograms", "label": "total weight (iron structure)"},
+        {"dimension": "length", "value": 330.0, "unit": "meters", "label": "height"}
+      ]
+    },
+    {
+      "id": "great_pyramid",
+      "name": "the Great Pyramid of Giza",
+      "category": "building",
+      "properties": [
+        {"dimension": "mass", "value": 6000000000.0, "unit": "kilograms", "label": "estimated weight"},
+        {"dimension": "length", "value": 138.5, "unit": "meters", "label": "current height"},
+        {"dimension": "volume", "value": 2583283.0, "unit": "cubic_meters", "label": "volume"}
+      ]
+    },
+    {
+      "id": "average_house",
+      "name": "an average US house",
+      "category": "building",
+      "properties": [
+        {"dimension": "area", "value": 195.0, "unit": "square_meters", "label": "floor area"},
+        {"dimension": "volume", "value": 487.5, "unit": "cubic_meters", "label": "interior volume"},
+        {"dimension": "energy", "value": 29000.0, "unit": "kilowatt_hours", "label": "annual energy consumption", "qualifier": "annual_energy"}
+      ]
+    },
+    {
+      "id": "the_sun",
+      "name": "the Sun",
+      "category": "astronomy",
+      "properties": [
+        {"dimension": "mass", "value": 1.989e30, "unit": "kilograms", "label": "mass"},
+        {"dimension": "length", "value": 1392700.0, "unit": "kilometers", "label": "diameter"},
+        {"dimension": "power", "value": 3.846e26, "unit": "watts", "label": "luminosity"},
+        {"dimension": "temperature", "value": 5505.0, "unit": "celsius", "label": "surface temperature"}
+      ]
+    },
+    {
+      "id": "the_moon",
+      "name": "the Moon",
+      "category": "astronomy",
+      "properties": [
+        {"dimension": "mass", "value": 7.342e22, "unit": "kilograms", "label": "mass"},
+        {"dimension": "length", "value": 3474.0, "unit": "kilometers", "label": "diameter"},
+        {"dimension": "length", "value": 384400.0, "unit": "kilometers", "label": "distance from Earth", "qualifier": "distance_from_earth"}
+      ]
+    },
+    {
+      "id": "earth",
+      "name": "Earth",
+      "category": "astronomy",
+      "properties": [
+        {"dimension": "mass", "value": 5.972e24, "unit": "kilograms", "label": "mass"},
+        {"dimension": "length", "value": 12742.0, "unit": "kilometers", "label": "diameter"},
+        {"dimension": "area", "value": 510100000.0, "unit": "square_kilometers", "label": "surface area"},
+        {"dimension": "speed", "value": 107226.0, "unit": "kilometers_per_hour", "label": "orbital speed"}
+      ]
+    },
+    {
+      "id": "neutron_star",
+      "name": "a neutron star",
+      "category": "astronomy",
+      "properties": [
+        {"dimension": "mass", "value": 2.8e30, "unit": "kilograms", "label": "typical mass"},
+        {"dimension": "length", "value": 20.0, "unit": "kilometers", "label": "typical diameter"},
+        {"dimension": "temperature", "value": 1000000.0, "unit": "celsius", "label": "surface temperature"}
+      ]
+    },
+    {
+      "id": "electron",
+      "name": "an electron",
+      "category": "subatomic",
+      "properties": [
+        {"dimension": "mass", "value": 9.109e-28, "unit": "grams", "label": "mass"}
+      ]
+    },
+    {
+      "id": "proton",
+      "name": "a proton",
+      "category": "subatomic",
+      "properties": [
+        {"dimension": "mass", "value": 1.673e-24, "unit": "grams", "label": "mass"}
+      ]
+    },
+    {
+      "id": "grain_of_sand",
+      "name": "a grain of sand",
+      "category": "subatomic",
+      "properties": [
+        {"dimension": "mass", "value": 0.011, "unit": "grams", "label": "weight"},
+        {"dimension": "length", "value": 0.5, "unit": "millimeters", "label": "diameter"},
+        {"dimension": "volume", "value": 0.00007, "unit": "milliliters", "label": "volume"}
+      ]
+    },
+    {
+      "id": "lightning_bolt",
+      "name": "a lightning bolt",
+      "category": "natural_phenomena",
+      "properties": [
+        {"dimension": "energy", "value": 1.0, "unit": "kilowatt_hours", "label": "energy per strike"},
+        {"dimension": "temperature", "value": 30000.0, "unit": "celsius", "label": "peak temperature"},
+        {"dimension": "time", "value": 0.0002, "unit": "seconds", "label": "duration of main stroke"}
+      ]
+    },
+    {
+      "id": "aa_battery",
+      "name": "a AA battery",
+      "category": "energy_reference",
+      "properties": [
+        {"dimension": "energy", "value": 9360.0, "unit": "joules", "label": "stored energy"},
+        {"dimension": "mass", "value": 23.0, "unit": "grams", "label": "weight"},
+        {"dimension": "volume", "value": 8.0, "unit": "milliliters", "label": "volume"}
+      ]
+    },
+    {
+      "id": "stick_of_dynamite",
+      "name": "a stick of dynamite",
+      "category": "energy_reference",
+      "properties": [
+        {"dimension": "energy", "value": 1000000.0, "unit": "joules", "label": "explosive energy"},
+        {"dimension": "mass", "value": 190.0, "unit": "grams", "label": "weight"}
+      ]
+    },
+    {
+      "id": "gallon_of_gasoline",
+      "name": "a gallon of gasoline",
+      "category": "energy_reference",
+      "properties": [
+        {"dimension": "energy", "value": 132000000.0, "unit": "joules", "label": "chemical energy"},
+        {"dimension": "mass", "value": 2.72, "unit": "kilograms", "label": "weight"},
+        {"dimension": "volume", "value": 3.785, "unit": "liters", "label": "volume"}
+      ]
+    },
+    {
+      "id": "hiroshima_bomb",
+      "name": "the Hiroshima atomic bomb",
+      "category": "energy_reference",
+      "properties": [
+        {"dimension": "energy", "value": 63000000000000.0, "unit": "joules", "label": "explosive yield"},
+        {"dimension": "mass", "value": 4400.0, "unit": "kilograms", "label": "weight of the bomb"}
+      ]
+    },
+    {
+      "id": "heartbeat",
+      "name": "a heartbeat",
+      "category": "time_reference",
+      "properties": [
+        {"dimension": "time", "value": 0.86, "unit": "seconds", "label": "duration (resting)"},
+        {"dimension": "energy", "value": 1.3, "unit": "joules", "label": "energy per beat"},
+        {"dimension": "volume", "value": 0.07, "unit": "liters", "label": "blood pumped per beat"}
+      ]
+    },
+    {
+      "id": "eye_blink",
+      "name": "a blink of an eye",
+      "category": "time_reference",
+      "properties": [
+        {"dimension": "time", "value": 0.3, "unit": "seconds", "label": "duration"}
+      ]
+    },
+    {
+      "id": "age_of_universe",
+      "name": "the age of the universe",
+      "category": "time_reference",
+      "properties": [
+        {"dimension": "time", "value": 13800000000.0, "unit": "years", "label": "age"}
+      ]
+    },
+    {
+      "id": "olympic_swimming_pool",
+      "name": "an Olympic swimming pool",
+      "category": "building",
+      "properties": [
+        {"dimension": "volume", "value": 2500000.0, "unit": "liters", "label": "water volume"},
+        {"dimension": "length", "value": 50.0, "unit": "meters", "label": "length"},
+        {"dimension": "area", "value": 1250.0, "unit": "square_meters", "label": "surface area"}
+      ]
+    },
+    {
+      "id": "teaspoon_of_neutron_star",
+      "name": "a teaspoon of neutron star material",
+      "category": "astronomy",
+      "properties": [
+        {"dimension": "mass", "value": 5500000000000.0, "unit": "kilograms", "label": "mass"},
+        {"dimension": "volume", "value": 5.0, "unit": "milliliters", "label": "volume"}
+      ]
+    },
+    {
+      "id": "usain_bolt_sprint",
+      "name": "Usain Bolt's 100m world record",
+      "category": "time_reference",
+      "properties": [
+        {"dimension": "time", "value": 9.58, "unit": "seconds", "label": "duration"},
+        {"dimension": "speed", "value": 37.58, "unit": "kilometers_per_hour", "label": "average speed"},
+        {"dimension": "length", "value": 100.0, "unit": "meters", "label": "distance"}
+      ]
+    },
+    {
+      "id": "container_ship",
+      "name": "a large container ship",
+      "category": "vehicle",
+      "properties": [
+        {"dimension": "mass", "value": 200000000.0, "unit": "kilograms", "label": "fully loaded weight"},
+        {"dimension": "length", "value": 400.0, "unit": "meters", "label": "length"},
+        {"dimension": "power", "value": 60000000.0, "unit": "watts", "label": "engine power"}
+      ]
+    },
+    {
+      "id": "human_sneeze",
+      "name": "a human sneeze",
+      "category": "human_body",
+      "properties": [
+        {"dimension": "speed", "value": 160.0, "unit": "kilometers_per_hour", "label": "exit velocity"},
+        {"dimension": "volume", "value": 0.04, "unit": "liters", "label": "volume of expelled droplets"},
+        {"dimension": "time", "value": 0.15, "unit": "seconds", "label": "duration"}
+      ]
+    },
+    {
+      "id": "tsar_bomba",
+      "name": "the Tsar Bomba",
+      "category": "energy_reference",
+      "properties": [
+        {"dimension": "energy", "value": 2.1e17, "unit": "joules", "label": "explosive yield"},
+        {"dimension": "mass", "value": 27000.0, "unit": "kilograms", "label": "weight"}
+      ]
+    },
+    {
+      "id": "human_lifetime",
+      "name": "an average human lifetime",
+      "category": "time_reference",
+      "properties": [
+        {"dimension": "time", "value": 73.0, "unit": "years", "label": "global average lifespan"},
+        {"dimension": "energy", "value": 53290000.0, "unit": "kcal", "label": "total caloric intake over a lifetime", "qualifier": "lifetime_calories"}
+      ]
+    }
+  ]
+}
